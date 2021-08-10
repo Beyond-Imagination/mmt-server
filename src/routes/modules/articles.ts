@@ -1,20 +1,32 @@
 import { Router } from 'express'
+import { param, validationResult } from 'express-validator'
 
 import wrapAsync from '@/src/middlewares/async.middleware'
 import { success } from '@/src/helpers/response'
 import EmptyError from '@/src/errors/empty.error'
+import ParamsError from '@/src/errors/params.error'
 
 const router = Router()
 
-router.get('/success', wrapAsync(
+router.get('/', wrapAsync(
   async (req, res) => {
-    success(res, 'Hello World!')
+    success(res, [])
   })
 )
 
-router.get('/failed', wrapAsync(
+router.get('/:id',
+  param('id').exists(),
+  wrapAsync(
   async (req, res) => {
-    throw new EmptyError('hello')
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      throw new ParamsError(errors)
+    }
+    
+    success(res, {
+      title: 'Hello World!',
+      text: 'Hello World'
+    })
   }
 ))
 
