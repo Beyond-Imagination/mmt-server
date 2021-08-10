@@ -1,4 +1,5 @@
 import express from 'express'
+import morgan from 'morgan'
 import 'module-alias/register'
 
 import routes from '~/src/routes'
@@ -15,6 +16,7 @@ class App {
 
   public init (): void {
     const { app } = this
+    app.use(morgan('dev'))
     // add routes
     routes.forEach((route) => app.use(`/api/${route.name}`, route.router))
   

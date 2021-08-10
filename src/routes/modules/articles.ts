@@ -23,9 +23,12 @@ router.get('/:id',
       throw new ParamsError(errors)
     }
     
+    const { id } = req.params
+    
     success(res, {
       title: 'Hello World!',
-      text: 'Hello World'
+      text: 'Hello World',
+      id
     })
   }
 ))
