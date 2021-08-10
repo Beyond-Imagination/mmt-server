@@ -21,7 +21,8 @@
     "types": [
       "@types/node",
       "@types/express",
-      "@types/morgan"
+      "@types/morgan",
+      "@types/jest"
     ]
   },
   "include": [

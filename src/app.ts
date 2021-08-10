@@ -31,3 +31,5 @@ class App {
   app.init();
   app.start();
 })()
+
+export default App
