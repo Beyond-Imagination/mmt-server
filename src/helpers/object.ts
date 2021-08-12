@@ -1,6 +1,7 @@
 interface IObjectType {
   [key: string]: any
 }
+
 export function reverseProjection (obj: object, parameters: string[]) {
   const result: IObjectType = {}
 

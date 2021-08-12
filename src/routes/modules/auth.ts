@@ -10,12 +10,10 @@ import { Model } from '@/types/model.type'
 import { AlreadyUsingUserIdError, NoUserError } from '@/errors/auth.error'
 import { ReqParamsNotMatchError } from '@/errors/req.error'
 import { generatePassword } from '@/helpers/password'
-import { projection, reverseProjection } from '@/helpers/object'
-import { authenticateWithJWT } from '@/middlewares/auth.middleware'
+import { reverseProjection } from '@/helpers/object'
+import { authenticateWithJWT, authenticateWithLocal } from '@/middlewares/auth.middleware'
 
 const router = Router()
-
-const JWT_SECRET = process.env.JWT_SECRET || 'HELLO_WORLD'
 
 router.get('/check/:userId', wrapAsync(
   async (req, res) => {
@@ -33,7 +31,9 @@ router.get('/check/:userId', wrapAsync(
   })
 )
 
-router.get('/user', [authenticateWithJWT], wrapAsync(
+router.get('/user',
+  [authenticateWithJWT],
+  wrapAsync(
   async (req, res) => {
     const user = req.user
     if (!user) {
@@ -43,28 +43,7 @@ router.get('/user', [authenticateWithJWT], wrapAsync(
   }
 ))
 
-router.post('/login', function (req, res, next) {
-  passport.authenticate('local', function (err, user) {
-    if (err) {
-      return next(err)
-    }
-
-    if (!user) {
-      return next(new NoUserError())
-    }
-
-    req.login(user, (loginErr) => {
-      if (loginErr) {
-        return next(loginErr)
-      }
-      const token = jwt.sign(
-        projection(user, ['userId', 'auth']),
-        JWT_SECRET
-      )
-      return success(res, token)
-    })
-  })(req, res, next)
-})
+router.post('/login', [authenticateWithLocal])
 
 router.post('/logout',
   wrapAsync(async (req, res) => {
