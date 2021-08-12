@@ -1,5 +1,5 @@
 import { Response } from 'express'
-import { API } from '~/types/api.type'
+import { API } from '@/types/api.type'
 
 export function success (res: Response, result: any) {
   const item: API.Response = {

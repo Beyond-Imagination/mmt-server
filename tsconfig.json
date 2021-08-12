@@ -12,17 +12,19 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./*"
-      ],
-      "~/*": [
-        "./*"
+        "./src/*"
       ]
     },
     "types": [
       "@types/node",
       "@types/express",
       "@types/morgan",
-      "@types/jest"
+      "@types/jest",
+      "@types/passport",
+      "@types/passport-local",
+      "@types/passport-jwt",
+      "@types/bcrypt",
+      "@types/jsonwebtoken",
     ]
   },
   "include": [

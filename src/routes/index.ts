@@ -1,9 +1,11 @@
-import articles from '~/src/routes/modules/articles'
+import articles from '@/routes/modules/articles'
+import auth from '@/routes/modules/auth'
 
-import { Server } from '~/types/server.type'
+import { Server } from '@/types/server.type'
 
 const routes: Server.IRoute[] = [
-  articles
+  articles,
+  auth
 ]
 
 export default routes

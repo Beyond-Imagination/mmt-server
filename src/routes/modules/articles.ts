@@ -1,10 +1,9 @@
 import { Router } from 'express'
 import { param, validationResult } from 'express-validator'
 
-import wrapAsync from '@/src/middlewares/async.middleware'
-import { success } from '@/src/helpers/response'
-import EmptyError from '@/src/errors/empty.error'
-import ParamsError from '@/src/errors/params.error'
+import wrapAsync from '@/middlewares/async.middleware'
+import { success } from '@/helpers/response'
+import { ReqParamsNotMatchError } from '@/errors/req.error'
 
 const router = Router()
 
@@ -20,7 +19,7 @@ router.get('/:id',
   async (req, res) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-      throw new ParamsError(errors)
+      throw new ReqParamsNotMatchError(errors)
     }
     
     const { id } = req.params
