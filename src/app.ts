@@ -6,6 +6,7 @@ import passport from 'passport'
 import session from 'express-session'
 
 import routes from '@/routes'
+import models from '@/models'
 import { errorHandler } from '@/middlewares/error.middleware'
 
 import '@/plugins/passport.plugin'
@@ -52,8 +53,9 @@ class App {
   }
 }
 
-(() => {
+(async () => {
   const app = new App();
+  await models.connect();
   app.init();
   app.start();
 })()
