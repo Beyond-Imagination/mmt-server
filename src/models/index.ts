@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
+import autoIncrement from 'mongoose-auto-increment';
+autoIncrement.initialize(mongoose.connection);
 
 let dbURI = "mongodb+srv://admin:Beyond_Imagination@cluster0.gxulv.mongodb.net/dev?retryWrites=true&w=majority"
 
 const connect = async () => {
     try {
         await mongoose.connect(dbURI);
-
         console.log('MongoDB connected!!');
     } catch (err) {
         console.error('Failed to connect to MongoDB', err);

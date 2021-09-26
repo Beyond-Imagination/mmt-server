@@ -1,19 +1,19 @@
 import { Schema, model, connect, Document, Types } from 'mongoose';
 
-interface Account extends Document {
+export interface IAccount extends Document {
     name: string;
     profile: string;
-    klaytnAddres: string;
-    nft: Array<Types.ObjectId>;
+    klaytnAddress: string;
+    nft?: Array<Types.ObjectId>;
     accessToken: string;
 }
 
-const schema = new Schema<Account>({
+const schema = new Schema<IAccount>({
     name: { type: String, required: true },
     profile: { type: String, required: true },
-    klaytnAddres: String,
+    klaytnAddress: String,
     nft: [{ type: Schema.Types.ObjectId }],
     accessToken: String,
 });
 
-export default model<Account>('Account', schema);
+export default model<IAccount>('Account', schema);
