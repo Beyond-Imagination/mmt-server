@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { projection } from '@/helpers/object'
 import { success } from '@/helpers/response'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'HELLO_WORLD'
+const JWT_SECRET = process.env.JWT_SECRET
 
 export function isAuthenticated (req: Request, _res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {

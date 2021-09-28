@@ -2,12 +2,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Model } from '@/types/model.type'
 import User from '@/models/user'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'HELLO_WORLD'
-
-if (!JWT_SECRET) {
-  console.error('No JWT secret string. Set JWT_SECRET environment variable.')
-  process.exit(1)
-}
+const JWT_SECRET = process.env.JWT_SECRET
 
 const JWTConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
