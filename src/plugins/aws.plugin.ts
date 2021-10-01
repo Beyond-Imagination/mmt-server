@@ -2,7 +2,7 @@ import AWS from 'aws-sdk'
 import dynamoose from 'dynamoose'
 
 const region = 'ap-northeast-2'
-const profile = 'eggp'
+const profile = process.env.AWS_PROFILE;
 
 const credentials = new AWS.SharedIniFileCredentials({ profile })
 

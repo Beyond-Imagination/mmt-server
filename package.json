@@ -10,6 +10,7 @@
     "test": "jest --detectOpenHandles --forceExit"
   },
   "dependencies": {
+    "@types/multer-s3": "^2.7.10",
     "aws-sdk": "^2.966.0",
     "axios": "^0.21.1",
     "bcrypt": "^5.0.1",
@@ -25,10 +26,13 @@
     "mongoose": "^6.0.5",
     "mongoose-auto-increment": "^5.0.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.3",
+    "multer-s3": "^2.9.0",
     "passport": "^0.4.1",
     "passport-accesstoken": "^0.1.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

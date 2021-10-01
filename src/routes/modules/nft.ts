@@ -4,6 +4,7 @@ import { body, validationResult } from 'express-validator';
 
 import { mintNFT } from '@/services/nft';
 import wrapAsync from '@/middlewares/async.middleware';
+import { upload } from '@/middlewares/multer';
 import { success } from '@/helpers/response'
 
 const router = Router();
@@ -26,6 +27,18 @@ router.post('/',
             next(error);
         }
     },
+)
+
+router.post('/image',
+    passport.authenticate('token'), 
+    upload.single("image"),
+    (req, res, next) => {
+        if(!req.file) {
+            next(new Error("fail to upload image to s3"))
+        } else {
+            res.status(200).json({"image": (req.file as Express.MulterS3.File).location})
+        }
+    }
 )
 
 export default {

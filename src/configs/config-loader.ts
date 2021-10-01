@@ -5,12 +5,14 @@ import { IJwtEnv, parseJwtEnv } from './jwt';
 import { INodeEnv, parseNodeEnv } from './node';
 import { ISessionEnv, parseSessionEnv } from './session';
 import { ITourEnv, parseTourEnv } from './tour';
+import { IAWSEnv, parseAWSEnv } from './aws';
 
 export interface IGlobalConfig
 	extends IJwtEnv,
 		INodeEnv,
 		ISessionEnv,
-		ITourEnv {}
+		ITourEnv,
+		IAWSEnv {}
 
 export const loadConfigFromDotEnv = (
 	envPath: string,
@@ -48,6 +50,9 @@ export const loadConfigFromDotEnv = (
 
 		// tour api
 		...parseTourEnv(env),
+
+		// aws api
+		...parseAWSEnv(env),
 	} as IGlobalConfig;
 };
 
