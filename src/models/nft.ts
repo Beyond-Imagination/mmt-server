@@ -1,5 +1,6 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, connection } from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
+autoIncrement.initialize(connection);
 
 export interface INft extends Document {
     contentId: number,  // 관광지 contentid

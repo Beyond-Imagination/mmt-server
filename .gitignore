@@ -93,3 +93,5 @@ sw.*
 .env
 api/routes/modules/data.json
 /data.json
+
+*.http

@@ -18,6 +18,7 @@ export async function mintNFT(user:IAccount, metadata:API.RequestPostNft) {
         let nft = await saveNFT(metadata);
         nft.txHash = await mint(user, nft, tokenURI);
         await saveTxHash(nft);
+        return nft;
     } catch(e) {
         throw e;
     }
