@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import HttpError from '@/errors/http.error'
 import { API } from '@/types/api.type'
-import { failed } from '@/helpers/response'
+import { failed } from '@/helpers'
 
 export const errorHandler = (
   error: HttpError,

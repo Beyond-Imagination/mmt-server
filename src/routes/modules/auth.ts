@@ -3,14 +3,12 @@ import { body, validationResult } from 'express-validator'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
 
-import wrapAsync from '@/middlewares/async.middleware'
+import { wrapAsync } from '@/middlewares'
 import User from '@/models/user'
-import { success } from '@/helpers/response'
+import { success, generatePassword, reverseProjection } from '@/helpers'
 import { Model } from '@/types/model.type'
 import { AlreadyUsingUserIdError, NoUserError } from '@/errors/auth.error'
 import { ReqParamsNotMatchError } from '@/errors/req.error'
-import { generatePassword } from '@/helpers/password'
-import { reverseProjection } from '@/helpers/object'
 import { authenticateWithJWT, authenticateWithLocal } from '@/middlewares/auth.middleware'
 
 const router = Router()

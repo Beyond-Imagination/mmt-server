@@ -3,9 +3,9 @@ import passport from 'passport';
 import { body, validationResult } from 'express-validator';
 
 import { mintNFT } from '@/services/nft';
-import wrapAsync from '@/middlewares/async.middleware';
+import {wrapAsync} from '@/middlewares';
 import { upload } from '@/middlewares/multer';
-import { success } from '@/helpers/response'
+import { success } from '@/helpers'
 
 const router = Router();
 
@@ -30,7 +30,7 @@ router.post('/',
 )
 
 router.post('/image',
-    passport.authenticate('token'), 
+    passport.authenticate('token'),
     upload.single("image"),
     (req, res, next) => {
         if(!req.file) {

@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { param, validationResult } from 'express-validator'
 
-import wrapAsync from '@/middlewares/async.middleware'
-import { success } from '@/helpers/response'
+import { wrapAsync } from '@/middlewares'
+import { success } from '@/helpers'
 import { ReqParamsNotMatchError } from '@/errors/req.error'
 
 const router = Router()

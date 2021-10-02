@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { param } from 'express-validator'
 
-import wrapAsync from '@/middlewares/async.middleware'
+import { wrapAsync } from '@/middlewares'
 import { TourController } from "@/controllers";
 
 const router = Router();
