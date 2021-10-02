@@ -12,7 +12,7 @@
   "dependencies": {
     "@types/multer-s3": "^2.7.10",
     "aws-sdk": "^2.966.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bcrypt": "^5.0.1",
     "caver-js-ext-kas": "^1.4.2",
     "dotenv": "^10.0.0",
