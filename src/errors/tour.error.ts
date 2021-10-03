@@ -2,7 +2,7 @@ import HttpError from '@/errors/http.error'
 
 export class ContentNotFoundError extends HttpError {
     constructor () {
-        super(400, '조건에 맞는 항목을 찾지 못했습니다.')
+        super(404, '조건에 맞는 항목을 찾지 못했습니다.')
     }
 }
 

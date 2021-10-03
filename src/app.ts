@@ -6,13 +6,13 @@ import passport from 'passport'
 import session from 'express-session'
 import 'dotenv/config'
 
+// 환경 변수를 사용 하는 곳보다 먼저 선언 되어야 합니다.
+import { configLoader } from "@/configs";
+const config = configLoader();
+
 import routes from '@/routes'
 import models from '@/models'
-import { errorHandler } from '@/middlewares/error.middleware'
-import { configLoader } from "@/configs";
-
-// 환경 변수를 사용 하는 곳보다 먼저 선언 되어야 합니다.
-const config = configLoader();
+import { errorHandler } from '@/middlewares'
 
 import '@/plugins/passport.plugin'
 import '@/plugins/aws.plugin'

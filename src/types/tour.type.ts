@@ -2,12 +2,55 @@ export declare namespace Tour {
     type Arrange = "A" | "B" | "C" | "D" | "E" | "O" | "P" | "Q" | "R" | "S";
     type ContentTypeId = 12 | 14 | 15 | 25 | 28;
 
-    export namespace API {
-        // todo: request, response
+    namespace API {
+        namespace GetMany {
+            interface Request {
+                numOfRows?: number; // 한 페이지 결과 수
+                pageNo?: number; // 현재 페이지 번호
+                arrange?: Arrange; // (A=제목순;B=조회순;C=수정일순; D=생성일순; E=거리순). 대표이미지가 반드시 있는 정렬: (O=제목순; P=조회순; Q=수정일순; R=생성일순;S=거리순)
+                contentTypeId?: ContentTypeId; // 관광타입(관광지; 숙박 등) ID
+                mapX: number; // X 좌표 (GPS X좌표(WGS84 경도 좌표))
+                mapY: number; // Y좌표 (GPS Y좌표(WGS84 위도 좌표))
+                radius: number; // 거리 반경(단위:m), Max값 20000m=20Km
+            }
+            interface Result {
+                numOfRows: number,
+                pageNo: number,
+                totalCount: number,
+                arrange?: string,
+                items: {
+                    contentId: number, // 콘텐츠ID
+                    contentTypeId: number, // 관광타입(관광지, 숙박 등) ID
+                    imageUrl?: string, // 썸네일 이미지 주소 (약 160\*100 size)
+                    title: string, // 콘텐츠 제목
+                    overview?: string // 콘텐츠 개요
+                }[] | []
+            }
+        }
+        namespace GetOne {
+            interface Request {
+                id: number, // params :ID
+                contentTypeId: number, // query :ID
+            }
+            interface Result {
+                contentId: number, // 콘텐츠 ID
+                contentTypeId: number, // 관광타입(관광지, 숙박 등) ID
+                title: string, // 콘텐츠명(제목)
+                overview?: string, // 콘텐츠 개요
+                images: {
+                    imgName?: string // 이미지명
+                    originImgUrl? : string // 원본 이미지
+                    smallImgUrl? : string // 썸네일 이미지
+                }[] | [], // 이미지
+                normalInfo: {title: string, content: string}[] | [], // 기본 정보
+                infoInfo: {title: string, content: string}[] | [], // 소개 정보
+                detailInfo: {title: string, content: string}[] | [] // 상세 정보
+            }
+        }
     }
 
-    export namespace Service {
-        export namespace GetDetailCommon {
+    namespace Service {
+        namespace GetDetailCommon {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -61,7 +104,7 @@ export declare namespace Tour {
             }
         }
 
-        export namespace GetDetailImage {
+        namespace GetDetailImage {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -76,20 +119,18 @@ export declare namespace Tour {
                 pageNo: number // 페이지 번호
                 totalCount: number // 전체 결과 수
                 items: {
-                    item: [
-                        {
-                            contentid: number // 콘텐츠ID
-                            imgname? : string // 이미지명
-                            originimgurl? : string // 원본 이미지
-                            serialnum? : string // 이미지 일련번호
-                            smallimageurl? : string // 썸네일 이미지
-                        }
-                    ]
+                    item: {
+                        contentid: number // 콘텐츠ID
+                        imgname? : string // 이미지명
+                        originimgurl? : string // 원본 이미지
+                        serialnum? : string // 이미지 일련번호
+                        smallimageurl? : string // 썸네일 이미지
+                    }[]
                 }
             }
         }
 
-        export namespace GetDetailInfo {
+        namespace GetDetailInfo {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -101,31 +142,29 @@ export declare namespace Tour {
                 pageNo: number // 페이지 번호
                 totalCount: number // 전체 결과 수
                 items: {
-                    item: [
-                        {
-                            contentid: number // 콘텐츠ID
-                            contenttypeid: ContentTypeId // 콘텐츠타입ID
+                    item: {
+                        contentid: number // 콘텐츠ID
+                        contenttypeid: ContentTypeId // 콘텐츠타입ID
 
-                            // 숙박, 여행코스를 제외한 타입
-                            fldgubun?: number // 일련번호
-                            infoname?: string // 제목
-                            infotext?: string // 내용
-                            serialnum?: number // 반복 일련번호
+                        // 숙박, 여행코스를 제외한 타입
+                        fldgubun?: number // 일련번호
+                        infoname?: string // 제목
+                        infotext?: string // 내용
+                        serialnum?: number // 반복 일련번호
 
-                            // contentTypeId=25 (여행코스)
-                            subcontentid?: number // 하위 콘텐츠ID
-                            subdetailalt?: string // 코스이미지 설명
-                            subdetailimg?: string // 코스이미지
-                            subdetailoverview?: string // 코스개요
-                            subname?: string // 코스명
-                            subnum?: number // 반복 일련번호
-                        }
-                    ]
+                        // contentTypeId=25 (여행코스)
+                        subcontentid?: number // 하위 콘텐츠ID
+                        subdetailalt?: string // 코스이미지 설명
+                        subdetailimg?: string // 코스이미지
+                        subdetailoverview?: string // 코스개요
+                        subname?: string // 코스명
+                        subnum?: number // 반복 일련번호
+                    }[]
                 }
             }
         }
 
-        export namespace GetDetailIntro {
+        namespace GetDetailIntro {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -216,45 +255,44 @@ export declare namespace Tour {
             }
         }
 
-        export namespace GetLocationBasedList {
+        namespace GetLocationBasedList {
             interface Request {
-                numOfRows?: number; // 한 페이지 결과 수
-                pageNo?: number; // 현재 페이지 번호
+                numOfRows?: string; // 한 페이지 결과 수
+                pageNo?: string; // 현재 페이지 번호
                 arrange?: Arrange; // (A=제목순;B=조회순;C=수정일순; D=생성일순; E=거리순). 대표이미지가 반드시 있는 정렬: (O=제목순; P=조회순; Q=수정일순; R=생성일순;S=거리순)
-                contentTypeId?: number; // 관광타입(관광지; 숙박 등) ID
-                mapX: number; // X 좌표 (GPS X좌표(WGS84 경도 좌표))
-                mapY: number; // Y좌표 (GPS Y좌표(WGS84 위도 좌표))
+                contentTypeId?: string; // 관광타입(관광지; 숙박 등) ID
+                mapX: string; // X 좌표 (GPS X좌표(WGS84 경도 좌표))
+                mapY: string; // Y좌표 (GPS Y좌표(WGS84 위도 좌표))
+                radius: string; // 거리 반경(단위:m), Max값 20000m=20Km
             }
             interface Response {
                 numOfRows: number // 한 페이지 결과 수
                 pageNo: number // 페이지 번호
                 totalCount: number // 전체 결과 수
                 items: {
-                    item: [
-                        {
-                            addr1?: string // 주소
-                            addr2?: string // 상세주소
-                            areacode?: number // 지역코드
-                            booktour?: boolean // 교과서 속 여행지 여부
-                            cat1?: string // 대분류
-                            cat2?: string // 중분류
-                            cat3?: string // 소분류
-                            contentid: number // 콘텐츠ID
-                            contenttypeid: ContentTypeId // 콘텐츠타입ID
-                            createdtime: number // 등록일
-                            dist: number // 거리
-                            firstimage?: string // 대표이미지(원본)
-                            firstimage2?: string // 대표이미지(썸네일)
-                            mapx?: number // GPS X좌표
-                            mapy?: number // GPS Y좌표
-                            mlevel?: number // Map Level
-                            modifiedtime: number // 수정일
-                            readcount?: number // 조회수
-                            sigungucode?: number // 시군구코드
-                            tel?: string // 전화번호
-                            title: string // 제목
-                        }
-                    ]
+                    item: {
+                        addr1?: string // 주소
+                        addr2?: string // 상세주소
+                        areacode?: number // 지역코드
+                        booktour?: boolean // 교과서 속 여행지 여부
+                        cat1?: string // 대분류
+                        cat2?: string // 중분류
+                        cat3?: string // 소분류
+                        contentid: number // 콘텐츠ID
+                        contenttypeid: ContentTypeId // 콘텐츠타입ID
+                        createdtime: number // 등록일
+                        dist: number // 거리
+                        firstimage?: string // 대표이미지(원본)
+                        firstimage2?: string // 대표이미지(썸네일)
+                        mapx?: number // GPS X좌표
+                        mapy?: number // GPS Y좌표
+                        mlevel?: number // Map Level
+                        modifiedtime: number // 수정일
+                        readcount?: number // 조회수
+                        sigungucode?: number // 시군구코드
+                        tel?: string // 전화번호
+                        title: string // 제목
+                    }[]
                 }
             }
         }

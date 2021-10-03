@@ -4,7 +4,7 @@
 
 import axios from "axios";
 
-import {BASE_URL, MOBILE_APP, MOBILE_OS, RADIUS, SUCCESS} from "@/constants";
+import {BASE_URL, MOBILE_APP, MOBILE_OS, SUCCESS} from "@/constants";
 import {Tour} from "@/types";
 import {FailedToCallAPIError} from "@/errors";
 
@@ -24,7 +24,6 @@ export async function getLocationBasedList(params: Request): Promise<Response> {
                 MobileApp: MOBILE_APP,
                 ServiceKey: process.env.TOUR_SERVICE_KEY,
                 listYN: "Y",
-                radius: RADIUS,
             }
         });
 
