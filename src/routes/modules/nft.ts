@@ -22,7 +22,7 @@ router.post('/',
     async (req, res, next) => {
         try {
             let nft = await mintNFT(req.user, req.body);
-            res.status(200).json(nft);
+            success(res, nft)
         } catch (error) {
             next(error);
         }
@@ -36,7 +36,7 @@ router.post('/image',
         if(!req.file) {
             next(new Error("fail to upload image to s3"))
         } else {
-            res.status(200).json({"image": (req.file as Express.MulterS3.File).location})
+            success(res, {"image": (req.file as Express.MulterS3.File).location})
         }
     }
 )
