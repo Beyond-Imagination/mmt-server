@@ -12,7 +12,7 @@ export default new Strategy(strategyOptions,
             return done(null, false);
         }
         token = token.split(" ")[1];
-        Account.findOne({accessToken: token}, function (err, user) {
+        Account.findOne({accessToken: token}).populate('nft').exec(function (err, user) {
             if (err) {
                 return done(err);
             }

@@ -12,7 +12,7 @@ const schema = new Schema<IAccount>({
     name: { type: String, required: true },
     profile: { type: String, required: true },
     klaytnAddress: String,
-    nft: [{ type: Schema.Types.ObjectId }],
+    nft: [{ type: Schema.Types.ObjectId, ref: 'Nft' }],
     accessToken: String,
 });
 
