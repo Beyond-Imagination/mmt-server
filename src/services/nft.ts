@@ -16,8 +16,9 @@ export async function mintNFT(user:IAccount, metadata:API.RequestPostNft) {
     try{
         let tokenURI = await saveNFTMetadata(metadata);
         let nft = await saveNFT(metadata);
-        nft.txHash = await mint(user, nft, tokenURI);
-        await saveTxHash(nft);
+        let txHash = await mint(user, nft, tokenURI);
+        await saveTxHash(nft, txHash);
+        await saveUserNFT(user, nft);
         return nft;
     } catch(e) {
         throw e;
@@ -53,8 +54,14 @@ async function mint(user:IAccount, nft:INft, nftURI:string) {
     }
 }
 
-async function saveTxHash(nft:INft) {
-    // TODO:TOURISM-KAKAO-T-69 save txHash
+async function saveTxHash(nft:INft, txHash:string) {
+    nft.txHash = txHash;
+    await nft.save();
+}
+
+async function saveUserNFT(user:IAccount,nft:INft) {
+    user.nft.push(nft._id);
+    await user.save();
 }
 
 export async function saveImage() {
