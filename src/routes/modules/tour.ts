@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import {param, query} from 'express-validator'
+import passport from "passport";
 
 import { wrapAsync } from '@/middlewares'
 import { TourController } from "@/controllers";
@@ -18,11 +19,13 @@ router.get('/',
         query('mapY').exists(),
         query('radius').exists(),
     ],
+    passport.authenticate('token'),
     wrapAsync(TourController.index)
 );
 router.get('/:id',
     param('id').exists(),
     query('contentTypeId').exists().isIn(CONTENT_TYPE_ID_VALUES),
+    passport.authenticate('token'),
     wrapAsync(TourController.show)
 );
 
