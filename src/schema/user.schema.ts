@@ -1,10 +1,10 @@
 import { Schema } from 'dynamoose'
 import { ImageInfoSchema } from '@/schema/image.schema'
 
-export const UserSchema = new Schema({
+export const SampleUserSchema = new Schema({
   userId: {
     type: String,
-    hashKey: true
+    hashKey: true,
   },
   password: String,
   userName: String,
@@ -13,10 +13,10 @@ export const UserSchema = new Schema({
   rules: {
     type: Array,
     schema: [String],
-    required: true
+    required: true,
   },
   profileImage: {
     type: Object,
-    schema: ImageInfoSchema
-  }
+    schema: ImageInfoSchema,
+  },
 })

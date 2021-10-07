@@ -1,7 +1,7 @@
 import { Media } from './media.type'
 
 export declare namespace Model {
-  interface User {
+  interface SampleUser {
     userId: string
     userName: string
     completed: boolean

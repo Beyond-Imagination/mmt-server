@@ -9,4 +9,4 @@ passport.use(JwtStrategy)
 passport.use(TokenStrategy)
 
 passport.serializeUser((user, done) => done(null, user))
-passport.deserializeUser<Model.User>((user, done) => done(null, user))
+passport.deserializeUser<Model.SampleUser>((user, done) => done(null, user))

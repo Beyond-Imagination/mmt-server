@@ -1,5 +1,21 @@
-import { model } from 'dynamoose'
-import { DocumentModel } from '@/types/documentModel.type'
-import { UserSchema } from '@/schema/user.schema'
+import { Schema, model, connect, Document, Types } from 'mongoose'
 
-export default model<DocumentModel.User>('byd.example.user', UserSchema)
+export interface IUser extends Document {
+  name: string
+  kakaoUserId: number
+  profileImageUri: string
+  klaytnAddress: string
+  nftList?: Array<Types.ObjectId>
+  accessToken: string
+}
+
+const schema = new Schema<IUser>({
+  name: { type: String, required: true },
+  kakaoUserId: { type: Number, required: true },
+  profileImageUri: { type: String, required: true },
+  klaytnAddress: String,
+  nftList: [{ type: Schema.Types.ObjectId, ref: 'Nft' }],
+  accessToken: String,
+})
+
+export default model<IUser>('User', schema)
