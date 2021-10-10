@@ -4,11 +4,10 @@ import User, { IUser } from '@/models/user'
 import NFT, { INft } from '@/models/nft'
 import { API } from '@/types/api.type'
 
-// TODO:TOURISM-KAKAO-T-68 set config
-const chainId = 1001
-const accessKeyId = 'KASK7995ABW9CQJW26XL0ZJR'
-const secretAccessKey = 'rhklZ-uzRD0Af99QNsGxTYs8h59MBJE_2dh8lbCt'
-const contractAddress = '0x607e9849631a8254dc9a4f0aeb401e3244de617b'
+const chainId = process.env.KAS_CHAIN_ID;
+const accessKeyId = process.env.KAS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.KAS_SECRET_ACCESS_KEY;
+const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
 
 const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey)
 

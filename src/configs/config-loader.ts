@@ -6,13 +6,15 @@ import { INodeEnv, parseNodeEnv } from './node';
 import { ISessionEnv, parseSessionEnv } from './session';
 import { ITourEnv, parseTourEnv } from './tour';
 import { IAWSEnv, parseAWSEnv } from './aws';
+import { IKASEnv, parseKASEnv } from './kas';
 
 export interface IGlobalConfig
 	extends IJwtEnv,
 		INodeEnv,
 		ISessionEnv,
 		ITourEnv,
-		IAWSEnv {}
+		IAWSEnv,
+		IKASEnv {}
 
 export const loadConfigFromDotEnv = (
 	envPath: string,
@@ -53,6 +55,9 @@ export const loadConfigFromDotEnv = (
 
 		// aws api
 		...parseAWSEnv(env),
+
+		// kas api
+		...parseKASEnv(env),
 	} as IGlobalConfig;
 };
 
