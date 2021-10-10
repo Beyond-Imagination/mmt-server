@@ -32,6 +32,7 @@
     "passport-accesstoken": "^0.1.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "snakecase-keys": "^5.1.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

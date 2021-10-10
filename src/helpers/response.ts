@@ -1,13 +1,14 @@
 import { Response } from 'express'
 import { API } from '@/types/api.type'
+import snakecaseKeys from 'snakecase-keys';
 
 export function success (res: Response, result: any) {
-  const item: API.Response = {
+  const item: API.Response = snakecaseKeys({
     status: 200,
     success: true,
     message: 'success',
     result
-  }
+  })
 
   return res.status(200).json(item)
 }
