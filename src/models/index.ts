@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import autoIncrement from 'mongoose-auto-increment';
 autoIncrement.initialize(mongoose.connection);
 
-let dbURI = "mongodb+srv://admin:Beyond_Imagination@cluster0.gxulv.mongodb.net/dev?retryWrites=true&w=majority"
+let dbURI = process.env.DB_URI;
 
 const connect = async () => {
     try {
