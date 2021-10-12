@@ -1,11 +1,7 @@
 export declare namespace User {
   namespace Service {
     namespace GetUserInfo {
-      interface Request {
-        accessToken: String
-      }
-
-      interface Response {
+      interface UserModel {
         kakaoUserId: Number
         nickname: String
         profileImageUri: String

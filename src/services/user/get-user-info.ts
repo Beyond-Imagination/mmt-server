@@ -6,15 +6,14 @@ import axios from 'axios'
 import { User } from '@/types'
 import { KAKAO_API_BASE_URL, PATH_KAKAO_GET_USER } from '@/constants'
 
-import Request = User.Service.GetUserInfo.Request
-import Response = User.Service.GetUserInfo.Response
+import UserModel = User.Service.GetUserInfo.UserModel
 
-export async function getUserInfo(req: Request): Promise<Response> {
+export async function getUserInfo(token: String): Promise<UserModel> {
   const url = `${KAKAO_API_BASE_URL}/${PATH_KAKAO_GET_USER}`
 
   const response = await axios.get(url, {
     headers: {
-      'Authorization': `Bearer ${req.accessToken}`,
+      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })

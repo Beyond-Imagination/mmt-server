@@ -1,7 +1,7 @@
 import { Schema, model, connect, Document, Types } from 'mongoose'
 
 export interface IUser extends Document {
-  name: string
+  nickname: string
   kakaoUserId: number
   profileImageUri: string
   klaytnAddress: string
@@ -10,7 +10,7 @@ export interface IUser extends Document {
 }
 
 const schema = new Schema<IUser>({
-  name: { type: String, required: true },
+  nickname: { type: String, required: true },
   kakaoUserId: { type: Number, required: true },
   profileImageUri: { type: String, required: true },
   klaytnAddress: String,

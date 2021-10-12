@@ -1,5 +1,5 @@
-import { response, Router } from 'express'
-import { header, body } from 'express-validator'
+import { Router } from 'express'
+import { header } from 'express-validator'
 import axios from 'axios'
 
 import { wrapAsync } from '@/middlewares/async.middleware'
@@ -7,9 +7,8 @@ import { success } from '@/helpers/response'
 import { KakaoUserAuthorizationCodeExpired } from '@/errors'
 import { FailedToCallAPIError } from '@/errors'
 
-import User, { IUser } from '@/models/user'
+import User from '@/models/user'
 import { getAccessToken, getUserInfo } from '@/services'
-
 import { KAKAO_API_BASE_URL, PATH_KAKAO_USER_LOGOUT } from '@/constants'
 
 const router = Router()
@@ -19,12 +18,13 @@ router.get(
   wrapAsync(async (req, res) => {
     await getAccessToken({ code: req.query.code.toString() }).then(
       async (response) => {
-        const userInfo = await getUserInfo({ accessToken: response.data.access_token })
+        const userInfo = await getUserInfo(response.data.access_token)
 
         // if old user
+
         // else new user
         await new User({
-          name: userInfo.nickname,
+          nickname: userInfo.nickname,
           kakaoUserId: userInfo.kakaoUserId,
           profileImageUri: userInfo.profileImageUri,
           accessToken: response.data.access_token,
@@ -42,18 +42,42 @@ router.get(
 // 회원 내정보 조회
 router.get(
   '/mine',
+  header('authorization').exists(),
   wrapAsync(async (req, res) => {
-    /*
-    {
-      "name": String,
-      "profile_image": String,
-      "klaytn_address": String,
-      "nft_list": [NFT1, NFT2, NFT3, ...],
-    }
-    */
-    success(res, [])
+    let token = req.headers.authorization ?? ''
+    token = token.substring(7, token.length)
+    const userInfo = await getUserInfo(token)
+
+    let query = User.where({ kakaoUserId: userInfo.kakaoUserId })
+    query
+      .findOne()
+      .lean()
+      .exec((error, user) => {
+        if (user) {
+          success(res, new UserResponse(user.nickname, user.profileImageUri))
+        }
+      })
   })
 )
+
+export class UserResponse {
+  nickname: String
+  profile_image: String
+  klaytn_address: String
+  nft_list: Array<String>
+
+  constructor(
+    nickname: String = '',
+    profileImageUri: String = '',
+    klaytnAddress: String = '',
+    nftList: Array<String> = []
+  ) {
+    this.nickname = nickname
+    this.profile_image = profileImageUri
+    this.klaytn_address = klaytnAddress
+    this.nft_list = nftList
+  }
+}
 
 // 회원 로그아웃
 router.delete(
