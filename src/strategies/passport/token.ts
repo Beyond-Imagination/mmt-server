@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-accesstoken'
 
-import Account from '@/models/user'
+import User from '@/models/user'
 
 let strategyOptions = {
   tokenHeader: 'Authorization',
@@ -11,8 +11,8 @@ export default new Strategy(strategyOptions, function (token, done) {
     return done(null, false)
   }
   token = token.split(' ')[1]
-  Account.findOne({ accessToken: token })
-    .populate('nft')
+  User.findOne({ accessToken: token })
+    .populate('nftList')
     .exec(function (err, user) {
       if (err) {
         return done(err)
