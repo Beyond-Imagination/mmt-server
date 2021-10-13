@@ -1,7 +1,6 @@
 import 'module-alias/register'
 
 import express from 'express'
-import morgan from 'morgan'
 import passport from 'passport'
 import session from 'express-session'
 import 'dotenv/config'
@@ -12,7 +11,7 @@ const config = configLoader();
 
 import routes from '@/routes'
 import models from '@/models'
-import { errorHandler } from '@/middlewares'
+import {errorHandler, FileStreamAll, FileStreamOnlyError, StdOut} from '@/middlewares'
 
 import '@/plugins/passport.plugin'
 import '@/plugins/aws.plugin'
@@ -27,17 +26,23 @@ class App {
 
   public init (): void {
     const { app } = this
+
+    app.set('trust proxy', true); // 정확한 remote address 추적을 위함
     app.use(express.json())
-    app.use(morgan('dev'))
     app.use(session({
       secret: SESSION_KEY,
       resave: false,
       saveUninitialized: false
     }))
-  
+
     //  Passport
     app.use(passport.initialize())
     app.use(passport.session())
+
+    // Morgan
+    app.use(StdOut());
+    app.use(FileStreamAll());
+    app.use(FileStreamOnlyError());
 
     // add routes
     routes.forEach((route) => app.use(`/api/${route.name}`, route.router))
