@@ -3,7 +3,7 @@ import passport from 'passport';
 import { body, validationResult } from 'express-validator';
 
 import { mintNFT } from '@/services/nft';
-import {wrapAsync} from '@/middlewares';
+import { wrapAsync, camelBody } from '@/middlewares';
 import { upload } from '@/middlewares/multer';
 import { success } from '@/helpers'
 
@@ -11,7 +11,7 @@ const router = Router();
 
 router.post('/', 
     [
-        body('contentId').exists(),
+        body('content_id').exists(),
         body('title').exists(),
         body('weather').exists(),
         body('emotion').exists(),
@@ -19,6 +19,7 @@ router.post('/',
         body('image').exists(),
     ],
     passport.authenticate('token'), 
+    camelBody,
     async (req, res, next) => {
         try {
             let nft = await mintNFT(req.user, req.body);
