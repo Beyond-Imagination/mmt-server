@@ -1,13 +1,15 @@
 import { Router } from 'express'
 import { header } from 'express-validator'
 import axios from 'axios'
+import passport from 'passport'
 
 import { wrapAsync } from '@/middlewares/async.middleware'
 import { success } from '@/helpers/response'
 import { KakaoUserAuthorizationCodeExpired } from '@/errors'
 import { FailedToCallAPIError } from '@/errors'
 
-import User from '@/models/user'
+import User, { IUser } from '@/models/user'
+import NFT from '@/models/nft'
 import { getAccessToken, getUserInfo } from '@/services'
 import { KAKAO_API_BASE_URL, PATH_KAKAO_USER_LOGOUT } from '@/constants'
 
@@ -42,22 +44,28 @@ router.get(
 // 회원 내정보 조회
 router.get(
   '/mine',
-  header('authorization').exists(),
+  passport.authenticate('token'),
   wrapAsync(async (req, res) => {
-    let token = req.headers.authorization ?? ''
-    token = token.substring(7, token.length)
-    const userInfo = await getUserInfo(token)
-
-    let query = User.where({ kakaoUserId: userInfo.kakaoUserId })
-    query
-      .findOne()
-      .lean()
-      .exec((error, user) => {
-        if (user) {
-          success(res, new UserResponse(user.nickname, user.profileImageUri))
+    let user = req.user as IUser;
+    success(res, {
+      "nickname": user.nickname,
+      "kakaoUserId": user.kakaoUserId,
+      "profileImageUri": user.profileImageUri,
+      "klaytnAddress": user.klaytnAddress,
+      "nftList": user.nftList.map(nft => {
+        return { 
+          "contentId": nft.contentId, 
+          "nftId": nft.nftId,
+          "image": nft.image,
+          'title': nft.title,
+          "weather": nft.weather,
+          "emotion": nft.emotion,
+          "impression": nft.impression,
+          "txHash": nft.txHash,
         }
-      })
-  })
+      }),
+    });
+  }),
 )
 
 export class UserResponse {

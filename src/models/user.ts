@@ -1,11 +1,13 @@
 import { Schema, model, connect, Document, Types } from 'mongoose'
 
+import { INft } from './nft'
+
 export interface IUser extends Document {
   nickname: string
   kakaoUserId: number
   profileImageUri: string
   klaytnAddress: string
-  nftList?: Array<Types.ObjectId>
+  nftList?: Array<Types.ObjectId> | Array<INft>
   accessToken: string
 }
 
