@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { header } from 'express-validator'
+import { body, header } from 'express-validator'
 import axios from 'axios'
 import passport from 'passport'
 
-import { wrapAsync } from '@/middlewares/async.middleware'
+import { wrapAsync, camelBody } from '@/middlewares'
 import { success } from '@/helpers/response'
 import { KakaoUserAuthorizationCodeExpired } from '@/errors'
 import { FailedToCallAPIError } from '@/errors'
@@ -86,6 +86,19 @@ export class UserResponse {
     this.nft_list = nftList
   }
 }
+
+router.post(
+  '/klaytnAddress',
+  body('klaytn_address').exists(),
+  camelBody,
+  passport.authenticate('token'),
+  wrapAsync(async (req, res) => {
+    let user = req.user as IUser;
+    user.klaytnAddress = req.body.klaytnAddress;
+    await user.save();
+    success(res, {});
+  })
+)
 
 // 회원 로그아웃
 router.delete(
