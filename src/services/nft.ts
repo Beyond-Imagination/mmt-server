@@ -7,7 +7,7 @@ import { API } from '@/types/api.type'
 const chainId = process.env.KAS_CHAIN_ID;
 const accessKeyId = process.env.KAS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.KAS_SECRET_ACCESS_KEY;
-const contractAddress = process.env.NFT_CONTRACT_ADDRESS;
+const nftName = process.env.NFT_NAME;
 
 const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey)
 
@@ -43,7 +43,7 @@ async function saveNFT(metadata: API.RequestPostNft) {
 
 async function mint(user: IUser, nft: INft, nftURI: string) {
   try {
-    let response = await caver.kas.kip17.mint('moment', user.klaytnAddress, nft.nftId, nftURI)
+    let response = await caver.kas.kip17.mint(nftName, user.klaytnAddress, nft.nftId, nftURI)
     console.log('mint nft requestd', user, nft, nftURI, response)
     return response.transactionHash
   } catch (e) {
