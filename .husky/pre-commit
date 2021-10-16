@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# 만약 webstom, vscode 같은 앱을 통해서 husky가 동작하지 않는다면
+# 터미널에서 echo $PATH로 나온 값을 ""로 묶어서 export PATH= 뒤에 붙여 넣으면 됩니다.
+# https://typicode.github.io/husky/#/?id=command-not-found
+# export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+yarn lint-staged

@@ -1,7 +1,11 @@
 build
 coverage
 node_modules
+
 *.json
 *.mo
 *.log
 *.lock
+
+.eslintignore
+.prettierignore

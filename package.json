@@ -7,7 +7,13 @@
     "build": "tsc",
     "serve": "nodemon --exec ts-node -r tsconfig-paths/register src/app.ts",
     "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/app.ts",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --detectOpenHandles --forceExit",
+    "postinstall": "husky install"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "eslint --fix"
+    ]
   },
   "dependencies": {
     "@types/multer-s3": "^2.7.10",
@@ -55,7 +61,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^4.3.8",
+    "husky": "^7.0.2",
     "jest": "^27.0.6",
     "lint-staged": "^11.2.3",
     "nodemon": "^2.0.12",
