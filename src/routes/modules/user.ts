@@ -22,15 +22,19 @@ router.get(
       async (response) => {
         const userInfo = await getUserInfo(response.data.access_token)
 
-        // if old user
-
-        // else new user
-        await new User({
-          nickname: userInfo.nickname,
-          kakaoUserId: userInfo.kakaoUserId,
-          profileImageUri: userInfo.profileImageUri,
-          accessToken: response.data.access_token,
-        }).save()
+        User.findOne({ kakaoUserId: userInfo.kakaoUserId as number }).exec(async function (err, user) {
+          if (!user) {
+            await new User({
+              nickname: userInfo.nickname,
+              kakaoUserId: userInfo.kakaoUserId,
+              profileImageUri: userInfo.profileImageUri,
+              accessToken: response.data.access_token,
+            }).save()
+          } else {
+            user.accessToken = response.data.access_token
+            await user.save()
+          }
+        })
 
         success(res, response.data)
       },
@@ -46,26 +50,26 @@ router.get(
   '/mine',
   passport.authenticate('token'),
   wrapAsync(async (req, res) => {
-    let user = req.user as IUser;
+    let user = req.user as IUser
     success(res, {
-      "nickname": user.nickname,
-      "kakaoUserId": user.kakaoUserId,
-      "profileImageUri": user.profileImageUri,
-      "klaytnAddress": user.klaytnAddress,
-      "nftList": user.nftList.map(nft => {
-        return { 
-          "contentId": nft.contentId, 
-          "nftId": nft.nftId,
-          "image": nft.image,
-          'title': nft.title,
-          "weather": nft.weather,
-          "emotion": nft.emotion,
-          "impression": nft.impression,
-          "txHash": nft.txHash,
+      nickname: user.nickname,
+      kakaoUserId: user.kakaoUserId,
+      profileImageUri: user.profileImageUri,
+      klaytnAddress: user.klaytnAddress,
+      nftList: user.nftList.map((nft) => {
+        return {
+          contentId: nft.contentId,
+          nftId: nft.nftId,
+          image: nft.image,
+          title: nft.title,
+          weather: nft.weather,
+          emotion: nft.emotion,
+          impression: nft.impression,
+          txHash: nft.txHash,
         }
       }),
-    });
-  }),
+    })
+  })
 )
 
 export class UserResponse {
