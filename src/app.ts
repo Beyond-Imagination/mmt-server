@@ -11,7 +11,7 @@ const config = configLoader();
 
 import routes from '@/routes'
 import models from '@/models'
-import {errorHandler, FileStreamAll, FileStreamOnlyError, StdOut} from '@/middlewares'
+import {errorHandler, FileStreamAll, FileStreamOnlyError, limiter, StdOut} from '@/middlewares'
 
 import '@/plugins/passport.plugin'
 import '@/plugins/aws.plugin'
@@ -43,6 +43,10 @@ class App {
     app.use(StdOut());
     app.use(FileStreamAll());
     app.use(FileStreamOnlyError());
+
+    // Express Rate Limit
+    // apply to all requests
+    app.use(limiter);
 
     // add routes
     routes.forEach((route) => app.use(`/api/${route.name}`, route.router))
