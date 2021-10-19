@@ -45,6 +45,35 @@ router.get(
   })
 )
 
+router.post(
+  '/login',
+  body('access_token').exists(),
+  camelBody,
+  wrapAsync(async (req, res) => {
+    const userInfo = await getUserInfo(req.body.accessToken)
+
+    User.findOne({ kakaoUserId: userInfo.kakaoUserId as number }).exec(async function (err, user) {
+      let isKlipLinked = false
+      if (!user) {
+        await new User({
+          nickname: userInfo.nickname,
+          kakaoUserId: userInfo.kakaoUserId,
+          profileImageUri: userInfo.profileImageUri,
+          accessToken: req.body.accessToke,
+        }).save()
+      } else {
+        user.accessToken = req.body.accessToken;
+        await user.save()
+        if(user.klaytnAddress) {
+          isKlipLinked = true
+        }
+      }
+
+      success(res, {isKlipLinked})
+    })
+  })
+)
+
 // 회원 내정보 조회
 router.get(
   '/mine',
