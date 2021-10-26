@@ -1,33 +1,40 @@
 import CaverExtKAS from 'caver-js-ext-kas'
+import AWS from 'aws-sdk'
+import { v4 as uuid } from 'uuid'
 
-import User, { IUser } from '@/models/user'
+import { IUser } from '@/models/user'
 import NFT, { INft } from '@/models/nft'
 import { API } from '@/types/api.type'
 
-const chainId = process.env.KAS_CHAIN_ID;
-const accessKeyId = process.env.KAS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.KAS_SECRET_ACCESS_KEY;
-const nftName = process.env.NFT_NAME;
+const chainId = process.env.KAS_CHAIN_ID
+const accessKeyId = process.env.KAS_ACCESS_KEY_ID
+const secretAccessKey = process.env.KAS_SECRET_ACCESS_KEY
+const nftName = process.env.NFT_NAME
 
 const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey)
+const s3 = new AWS.S3()
 
 export async function mintNFT(user: IUser, metadata: API.RequestPostNft) {
-  try {
-    let tokenURI = await saveNFTMetadata(metadata)
-    let nft = await saveNFT(metadata)
-    let txHash = await mint(user, nft, tokenURI)
-    await saveTxHash(nft, txHash)
-    await saveUserNFT(user, nft)
-    return nft
-  } catch (e) {
-    throw e
-  }
+  let tokenURI = await saveNFTMetadata(metadata)
+  let nft = await saveNFT(metadata)
+  let txHash = await mint(user, nft, tokenURI)
+  await saveTxHash(nft, txHash)
+  await saveUserNFT(user, nft)
+  return nft
 }
 
 async function saveNFTMetadata(metadata: API.RequestPostNft) {
-  // 추후 필요할시 구현. 현재는 임의의 링크 return
-  let tempMetadata = 'https://link.to.your/token/metadata-0x1.json'
-  return tempMetadata
+  let data = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: `metadata/${uuid()}.json`,
+    Body: Buffer.from(JSON.stringify(metadata)),
+    ContentEncoding: 'base64',
+    ContentType: 'application/json',
+    ACL: 'public-read'
+  }
+
+  let result = await s3.upload(data).promise()
+  return result.Location
 }
 
 async function saveNFT(metadata: API.RequestPostNft) {
