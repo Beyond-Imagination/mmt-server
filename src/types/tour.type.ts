@@ -119,14 +119,15 @@ export declare namespace Tour {
                 pageNo: number // 페이지 번호
                 totalCount: number // 전체 결과 수
                 items: {
-                    item: {
-                        contentid: number // 콘텐츠ID
-                        imgname? : string // 이미지명
-                        originimgurl? : string // 원본 이미지
-                        serialnum? : string // 이미지 일련번호
-                        smallimageurl? : string // 썸네일 이미지
-                    }[]
+                    item: Image | Image[]
                 }
+            }
+            interface Image {
+                contentid: number // 콘텐츠ID
+                imgname? : string // 이미지명
+                originimgurl? : string // 원본 이미지
+                serialnum? : string // 이미지 일련번호
+                smallimageurl? : string // 썸네일 이미지
             }
         }
 

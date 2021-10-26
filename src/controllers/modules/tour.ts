@@ -5,7 +5,7 @@ import {Request, Response} from "express";
 import {validationResult} from "express-validator";
 
 import { success } from "@/helpers";
-import {ReqParamsNotMatchError, ContentNotFoundError} from "@/errors";
+import {ReqParamsNotMatchError} from "@/errors";
 import {Tour} from "@/types";
 import {getDetailCommon, getDetailImage, getDetailInfo, getDetailIntro, getLocationBasedList} from "@/services";
 
@@ -91,23 +91,33 @@ const show = async (req: Request, res: Response) => {
         getDetailInfo({ contentId, contentTypeId })
     ]);
 
-    if (detailInfoList.totalCount == 0) {
-        throw new ContentNotFoundError();
-    }
-
-    const images =
-        detailImageList.totalCount != 0
-            ? detailImageList.items.item.map(item => {
-                return {
-                    imgName: item.imgname, // 이미지명
-                    originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
-                    smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
-                }
-            }) : [];
-
     const normalInfo = parseDetailCommon(detailCommon);
     const infoInfo = parseDetailIntro(detailIntro);
-    const detailInfo = parseDetailInfo(detailInfoList.items.item);
+
+    let detailInfo, images;
+    if (detailImageList.totalCount === 1) {
+        let item = detailImageList.items.item as Tour.Service.GetDetailImage.Image;
+        images = [{
+            imgName: item.imgname, // 이미지명
+            originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
+            smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
+        }]
+    } else if (detailImageList.totalCount > 1) {
+        let item = detailImageList.items.item as Tour.Service.GetDetailImage.Image[];
+        images = item.map(item => {
+            return {
+                imgName: item.imgname, // 이미지명
+                originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
+                smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
+            }
+        });
+    } else {
+        images = [];
+    }
+    
+    if (detailInfoList.totalCount !== 0) {
+        detailInfo = parseDetailInfo(detailInfoList.items.item);
+    }
 
     const result: Tour.API.GetOne.Result = {
         contentId, // 콘텐츠 ID
