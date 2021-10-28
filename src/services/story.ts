@@ -24,7 +24,7 @@ export function isStoryUser(accessToken) {
         return res.data
       })
       .catch(e => {
-        console.error(e.status + e.statusText + e.response.data)
+        console.error(e.status, e.statusText, e.response.data)
         throw new FailedToCallAPIError(e.response.data)
       })
   } catch (e) {
@@ -56,7 +56,7 @@ export function checkConsent(accessToken, scopes) {
         return res.data
       })
       .catch(e => {
-        console.error(e.status + e.statusText + e.response.data)
+        console.error(e.status, e.statusText, e.response.data)
         throw new FailedToCallAPIError(e.response.data)
       })
   } catch (e) {
@@ -92,7 +92,7 @@ export function uploadImages(accessToken, file) {
         return res.data
       })
       .catch(e => {
-        console.error(e.status + e.statusText + e.response.data)
+        console.error(e.status, e.statusText, e.response.data)
         throw new FailedToCallAPIError(e.response.data)
       })
   } catch (e) {
@@ -133,7 +133,7 @@ export function postPhotoStory(accessToken, imageUrlList) {
         return res.data
       })
       .catch(e => {
-        console.error(e.status + e.statusText + e.response.data)
+        console.error(e.status, e.statusText, e.response.data)
         throw new FailedToCallAPIError(e.response.data)
       })
   } catch (e) {
