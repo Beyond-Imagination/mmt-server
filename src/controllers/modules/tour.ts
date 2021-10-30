@@ -7,6 +7,7 @@ import {validationResult} from 'express-validator'
 import { success } from '@/helpers'
 import {ReqParamsNotMatchError} from '@/errors'
 import {Tour} from '@/types'
+import { CONTENT_TYPE_ID_VALUES } from '@/constants'
 import {getDetailCommon, getDetailImage, getDetailInfo, getDetailIntro, getLocationBasedList} from '@/services'
 
 /**
@@ -22,8 +23,12 @@ const index = async (req: Request, res: Response) => {
 
   const { query } = req
 
-  const locationBasedList = await getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
-
+  let locationBasedList = await getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
+  if(!query.contentTypeId) {
+    locationBasedList.items.item = locationBasedList.items.item.filter(value => CONTENT_TYPE_ID_VALUES.includes(String(value.contenttypeid)))
+    locationBasedList.numOfRows = locationBasedList.items.item.length
+  }
+  
   const result: Tour.API.GetMany.Result = {
     numOfRows: locationBasedList.numOfRows,
     pageNo: locationBasedList.pageNo,
