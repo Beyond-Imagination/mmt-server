@@ -36,16 +36,19 @@ const index = async (req: Request, res: Response) => {
     return success(res, result)
   }
 
-  const detailCommonList = await Promise.all(
-    locationBasedList.items.item.map(async item =>
-      getDetailCommon({
-        contentId: item.contentid,
-        contentTypeId: item.contenttypeid,
-        overviewYN: 'Y'
-      })
+  let detailCommonList = []
+  if(query.overview) {
+    detailCommonList = await Promise.all(
+      locationBasedList.items.item.map(async item =>
+        getDetailCommon({
+          contentId: item.contentid,
+          contentTypeId: item.contenttypeid,
+          overviewYN: 'Y'
+        })
+      )
     )
-  )
-
+  }
+  
   const mergedList = _.merge(locationBasedList.items, {item: detailCommonList})
 
   const items = mergedList.item.map(item => {
