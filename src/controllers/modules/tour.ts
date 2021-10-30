@@ -42,7 +42,7 @@ const index = async (req: Request, res: Response) => {
   }
 
   let detailCommonList = []
-  if(query.overview) {
+  if(query.overview==='true') {
     detailCommonList = await Promise.all(
       locationBasedList.items.item.map(async item =>
         getDetailCommon({
