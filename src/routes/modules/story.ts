@@ -8,7 +8,7 @@ const Buffer = buffer.Buffer
 import {camelBody, wrapAsync} from '@/middlewares'
 import {checkConsent, isStoryUser, postPhotoStory, uploadImages} from '@/services'
 import {success} from '@/helpers'
-import {NotAgreeToWriteStoryError, NotStoryUserError} from '@/errors'
+import {FailedToCallAPIError, NotAgreeToWriteStoryError, NotStoryUserError} from '@/errors'
 
 const router = Router()
 
@@ -38,16 +38,17 @@ router.post('/post',
       }
 
       const { imageUrl } = body
-      const data = axios
+      const result = await axios
         .get(imageUrl, {
           responseType: 'arraybuffer'
         })
-        .then(res => {
-          return Buffer.from(res.data)
+        .catch(e => {
+          throw new FailedToCallAPIError(e.message)
         })
+      const imageData = Buffer.from(result.data)
 
       // 이미지 업로드 하기
-      const imageUrlList = await uploadImages(accessToken, data)
+      const imageUrlList = await uploadImages(accessToken, imageData)
 
       // 사진 스토리 쓰기
       await postPhotoStory(accessToken, imageUrlList) // 올라간 스토리 ID
