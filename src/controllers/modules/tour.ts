@@ -37,8 +37,17 @@ const index = async (req: Request, res: Response) => {
     items: []
   }
 
-  if (locationBasedList.totalCount == 0) {
+  // todo: @ts-ignore 처리되어 있는 타입 관련 이슈들 해결
+  // @ts-ignore
+  if (locationBasedList.items === '') {
     return success(res, result)
+  }
+
+  // @ts-ignore
+  if (!(locationBasedList.items.item.length)) {
+    // 모종의 이유로 배열이 아니라 오브젝트라면 배열로 바꿔줌
+    // @ts-ignore
+    locationBasedList.items.item = [locationBasedList.items.item]
   }
 
   let detailCommonList = []
