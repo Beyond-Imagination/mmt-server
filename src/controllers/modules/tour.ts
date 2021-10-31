@@ -5,6 +5,8 @@ import {Request, Response} from 'express'
 import {validationResult} from 'express-validator'
 
 import { success } from '@/helpers'
+import { IUser } from '@/models/user'
+import { INft } from '@/models/nft'
 import {ReqParamsNotMatchError} from '@/errors'
 import {Tour} from '@/types'
 import { CONTENT_TYPE_ID_VALUES } from '@/constants'
@@ -140,6 +142,9 @@ const show = async (req: Request, res: Response) => {
 
   console.log('detailCommon', detailCommon)
 
+  let nftList = (req.user as IUser).nftList as Array<INft>
+  let nft = nftList.find(nft => nft.contentId === contentId)
+
   const result: Tour.API.GetOne.Result = {
     contentId, // 콘텐츠 ID
     contentTypeId, // 관광타입(관광지, 숙박 등) ID
@@ -151,7 +156,20 @@ const show = async (req: Request, res: Response) => {
 
     normalInfo, // 기본 정보
     infoInfo, // 소개 정보
-    detailInfo // 상세 정보
+    detailInfo, // 상세 정보
+  }
+
+  if(nft) {
+    result.nft = {
+      'contentId': nft.contentId,
+      'image': nft.image,
+      'title': nft.title,
+      'weather': nft.weather,
+      'emotion': nft.emotion,
+      'impression': nft.impression,
+      'txHash': nft.txHash,
+      'nftId': nft.nftId,
+    }
   }
 
   success(res, result)

@@ -1,5 +1,5 @@
 export declare namespace Tour {
-    type Arrange = "A" | "B" | "C" | "D" | "E" | "O" | "P" | "Q" | "R" | "S";
+    type Arrange = 'A' | 'B' | 'C' | 'D' | 'E' | 'O' | 'P' | 'Q' | 'R' | 'S';
     type ContentTypeId = 12 | 14 | 15 | 25 | 28;
 
     namespace API {
@@ -45,6 +45,16 @@ export declare namespace Tour {
                 normalInfo: {title: string, content: string}[] | [], // 기본 정보
                 infoInfo: {title: string, content: string}[] | [], // 소개 정보
                 detailInfo: {title: string, content: string}[] | [] // 상세 정보
+                nft?: {
+                    contentId: number,
+                    image: string,
+                    title: string,
+                    weather: string,
+                    emotion: string,
+                    impression: string,
+                    txHash?: string,
+                    nftId: number,
+                }, 
             }
         }
     }
@@ -56,12 +66,12 @@ export declare namespace Tour {
                 pageNo?: number; // 페이지 번호
                 contentId: number; // 콘텐츠 ID
                 contentTypeId?: ContentTypeId; // 관광타입 ID
-                defaultYN?: "Y" | "N"; // 기본정보 조회
-                firstImageYN?: "Y" | "N"; // 대표이미지 조회
-                areaCodeYN?: "Y" | "N"; // 지역코드 조회
-                catCodeYN?: "Y" | "N"; // 서비스분류코드 조회
-                addrInfoYN?: "Y" | "N"; // 주소 조회
-                overviewYN?: "Y" | "N"; // 개요 조회
+                defaultYN?: 'Y' | 'N'; // 기본정보 조회
+                firstImageYN?: 'Y' | 'N'; // 대표이미지 조회
+                areaCodeYN?: 'Y' | 'N'; // 지역코드 조회
+                catCodeYN?: 'Y' | 'N'; // 서비스분류코드 조회
+                addrInfoYN?: 'Y' | 'N'; // 주소 조회
+                overviewYN?: 'Y' | 'N'; // 개요 조회
             }
             interface Response {
                 contentid: number // 콘텐츠ID
@@ -109,9 +119,9 @@ export declare namespace Tour {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
                 contentId: number; // 콘텐츠 ID
-                imageYN?: "Y" | "N"; // Y=콘텐츠 이미지 조회
+                imageYN?: 'Y' | 'N'; // Y=콘텐츠 이미지 조회
                                      // N=”음식점”타입의 음식메뉴 이미지
-                subImageYN?: "Y" | "N"; // Y=원본;썸네일 이미지 조회
+                subImageYN?: 'Y' | 'N'; // Y=원본;썸네일 이미지 조회
                                         // N=Null
             }
             interface Response {
