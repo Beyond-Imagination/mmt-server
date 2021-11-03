@@ -161,6 +161,8 @@ const show = async (req: Request, res: Response) => {
     normalInfo, // 기본 정보
     infoInfo, // 소개 정보
     detailInfo, // 상세 정보
+    mapx: detailCommon.mapx,
+    mapy: detailCommon.mapy,
   }
 
   if(nft) {

@@ -54,7 +54,9 @@ export declare namespace Tour {
                     impression: string,
                     txHash?: string,
                     nftId: number,
-                }, 
+                },
+                mapx: number,
+                mapy: number,
             }
         }
     }

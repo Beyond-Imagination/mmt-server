@@ -23,6 +23,7 @@ export async function getDetailCommon(params: Request): Promise<Response> {
         MobileOS: MOBILE_OS,
         MobileApp: MOBILE_APP,
         ServiceKey: process.env.TOUR_SERVICE_KEY,
+        mapinfoYN: "Y",
       },
     })
 
