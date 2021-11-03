@@ -5,9 +5,9 @@ import {Request, Response} from 'express'
 import {validationResult} from 'express-validator'
 
 import { success } from '@/helpers'
+import {ContentNotFoundError, ReqParamsNotMatchError} from '@/errors'
 import { IUser } from '@/models/user'
 import { INft } from '@/models/nft'
-import {ReqParamsNotMatchError} from '@/errors'
 import {Tour} from '@/types'
 import { CONTENT_TYPE_ID_VALUES } from '@/constants'
 import {getDetailCommon, getDetailImage, getDetailInfo, getDetailIntro, getLocationBasedList} from '@/services'
@@ -112,10 +112,15 @@ const show = async (req: Request, res: Response) => {
     getDetailInfo({ contentId, contentTypeId })
   ])
 
+  if (!detailCommon) {
+    // 정상적인 요청이라면 detailCommon이 undefined이면 안됨
+    throw new ContentNotFoundError()
+  }
+
   const normalInfo = parseDetailCommon(detailCommon)
   const infoInfo = parseDetailIntro(detailIntro)
 
-  let detailInfo, images
+  let images
   if (detailImageList.totalCount === 1) {
     let item = detailImageList.items.item as Tour.Service.GetDetailImage.Image
     images = [{
@@ -135,12 +140,11 @@ const show = async (req: Request, res: Response) => {
   } else {
     images = []
   }
-    
+
+  let detailInfo = []
   if (detailInfoList.totalCount !== 0) {
     detailInfo = parseDetailInfo(detailInfoList.items.item)
   }
-
-  console.log('detailCommon', detailCommon)
 
   let nftList = (req.user as IUser).nftList as Array<INft>
   let nft = nftList.find(nft => nft.contentId === contentId)
@@ -431,19 +435,18 @@ function parseDetailIntro(detailIntro) {
 }
 
 function parseDetailInfo(detailInfoList) {
-  if (typeof detailInfoList == 'object') {
+  if (!(detailInfoList.length)) {
+    // array가 아닌 object가 들어올 수도 있음
     detailInfoList = [detailInfoList]
   }
 
   return detailInfoList.map(item => {
-    let ans = []
+    let obj = { title: null, content: null }
 
     for (const property in item) {
       if (!item.hasOwnProperty(property)) {
         continue
       }
-
-      let obj = { title: null, content: null }
 
       switch (property) {
       // 여행코스 제외
@@ -470,13 +473,9 @@ function parseDetailInfo(detailInfoList) {
       case 'subnum':
         obj = { title: '반복 일련번호', content: item[property] }
         break
-      default:
-        continue
       }
-
-      ans.push(obj)
     }
 
-    return ans
+    return obj
   })
 }
