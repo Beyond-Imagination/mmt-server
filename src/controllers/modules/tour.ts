@@ -10,7 +10,9 @@ import { IUser } from '@/models/user'
 import { INft } from '@/models/nft'
 import {Tour} from '@/types'
 import { CONTENT_TYPE_ID_VALUES } from '@/constants'
-import {getDetailCommon, getDetailImage, getDetailInfo, getDetailIntro, getLocationBasedList} from '@/services'
+import {TourService} from '@/services'
+
+const tourService = new TourService()
 
 /**
  * 관광지 목록 조회
@@ -25,7 +27,7 @@ const index = async (req: Request, res: Response) => {
 
   const { query } = req
 
-  let locationBasedList = await getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
+  let locationBasedList = await tourService.getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
   if(!query.contentTypeId) {
     locationBasedList.items.item = locationBasedList.items.item.filter(value => CONTENT_TYPE_ID_VALUES.includes(String(value.contenttypeid)))
     locationBasedList.numOfRows = locationBasedList.items.item.length
@@ -56,7 +58,7 @@ const index = async (req: Request, res: Response) => {
   if(query.overview==='true') {
     detailCommonList = await Promise.all(
       locationBasedList.items.item.map(async item =>
-        getDetailCommon({
+        tourService.getDetailCommon({
           contentId: item.contentid,
           contentTypeId: item.contenttypeid,
           overviewYN: 'Y'
@@ -106,10 +108,10 @@ const show = async (req: Request, res: Response) => {
     detailCommon,
     detailInfoList
   ] = await Promise.all([
-    getDetailIntro({ contentId, contentTypeId }),
-    getDetailImage({ contentId }),
-    getDetailCommon({ contentId, contentTypeId, defaultYN: 'Y', addrInfoYN: 'Y', overviewYN: 'Y' }),
-    getDetailInfo({ contentId, contentTypeId })
+    tourService.getDetailIntro({ contentId, contentTypeId }),
+    tourService.getDetailImage({ contentId }),
+    tourService.getDetailCommon({ contentId, contentTypeId, defaultYN: 'Y', addrInfoYN: 'Y', overviewYN: 'Y' }),
+    tourService.getDetailInfo({ contentId, contentTypeId })
   ])
 
   if (!detailCommon) {
