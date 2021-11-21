@@ -2,14 +2,12 @@ import CaverExtKAS from 'caver-js-ext-kas'
 import AWS from 'aws-sdk'
 import { v4 as uuid } from 'uuid'
 
+import {env} from '@/env'
 import { IUser } from '@/models/user'
 import NFT, { INft } from '@/models/nft'
 import { API } from '@/types/api.type'
 
-const chainId = process.env.KAS_CHAIN_ID
-const accessKeyId = process.env.KAS_ACCESS_KEY_ID
-const secretAccessKey = process.env.KAS_SECRET_ACCESS_KEY
-const nftName = process.env.NFT_NAME
+const { kas: { chainId, accessKeyId, secretAccessKey,nftName }, aws: {s3BucketName}} = env
 
 const caver = new CaverExtKAS(chainId, accessKeyId, secretAccessKey)
 const s3 = new AWS.S3()
@@ -25,7 +23,7 @@ export async function mintNFT(user: IUser, metadata: API.RequestPostNft) {
 
 async function saveNFTMetadata(metadata: API.RequestPostNft) {
   let data = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Bucket: s3BucketName,
     Key: `metadata/${uuid()}.json`,
     Body: Buffer.from(JSON.stringify(metadata)),
     ContentEncoding: 'base64',

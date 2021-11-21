@@ -1,12 +1,13 @@
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { Model } from '@/types/model.type'
 import User from '@/models/sampleuser'
+import {env} from '@/env'
 
-const JWT_SECRET = process.env.JWT_SECRET
+const { jwtSecret } = env
 
 const JWTConfig = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: JWT_SECRET,
+  secretOrKey: jwtSecret,
 }
 
 const JwtStrategy = new Strategy(JWTConfig, async (jwtPayload, done) => {

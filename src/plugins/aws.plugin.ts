@@ -1,8 +1,9 @@
 import AWS from 'aws-sdk'
 import dynamoose from 'dynamoose'
+import {env} from '@/env'
 
 const region = 'ap-northeast-2'
-const profile = process.env.AWS_PROFILE;
+const {aws: {profile}} = env
 
 const credentials = new AWS.SharedIniFileCredentials({ profile })
 

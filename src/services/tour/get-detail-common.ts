@@ -7,12 +7,14 @@ import axios from 'axios'
 import {BASE_URL, MOBILE_APP, MOBILE_OS, SUCCESS} from '@/constants'
 import {Tour} from '@/types'
 import {FailedToCallAPIError} from '@/errors'
+import {env} from '@/env'
 
 import Request = Tour.Service.GetDetailCommon.Request;
 import Response = Tour.Service.GetDetailCommon.Response;
 
 export async function getDetailCommon(params: Request): Promise<Response> {
   try {
+    const {tour: {serviceKey}} = env
     const url = `${BASE_URL}/detailCommon`
 
     console.info('call getDetailCommon function')
@@ -22,8 +24,8 @@ export async function getDetailCommon(params: Request): Promise<Response> {
         ...params,
         MobileOS: MOBILE_OS,
         MobileApp: MOBILE_APP,
-        ServiceKey: process.env.TOUR_SERVICE_KEY,
-        mapinfoYN: "Y",
+        ServiceKey: serviceKey,
+        mapinfoYN: 'Y',
       },
     })
 

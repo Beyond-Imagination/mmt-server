@@ -1,10 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
 import passport from 'passport'
-import { NotAuthenticated, NoUserError } from '@/errors/auth.error'
 import jwt from 'jsonwebtoken'
-import { projection, success } from '@/helpers'
 
-const JWT_SECRET = process.env.JWT_SECRET
+import { NotAuthenticated, NoUserError } from '@/errors'
+import { projection, success } from '@/helpers'
+import {env} from '@/env'
+
+const {jwtSecret} = env
 
 export function isAuthenticated (req: Request, _res: Response, next: NextFunction) {
   if (req.isAuthenticated()) {
@@ -45,7 +47,7 @@ export function authenticateWithLocal (req: Request, res: Response, next: NextFu
 
       const token = jwt.sign(
         projection(user, ['userId', 'auth']),
-        JWT_SECRET
+        jwtSecret
       )
 
       return success(res, token)

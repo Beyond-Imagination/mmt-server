@@ -24,7 +24,7 @@
       "@types/passport-local",
       "@types/passport-jwt",
       "@types/bcrypt",
-      "@types/jsonwebtoken",
+      "@types/jsonwebtoken"
     ]
   },
   "include": [

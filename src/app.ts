@@ -4,12 +4,12 @@ import express from 'express'
 import passport from 'passport'
 import session from 'express-session'
 import cors from 'cors'
-import 'dotenv/config'
 
 // 환경 변수를 사용 하는 곳보다 먼저 선언 되어야 합니다.
-import { configLoader } from '@/configs'
-const config = configLoader()
+import {envLoader} from '@/loaders'
+envLoader()
 
+import {env} from '@/env'
 import routes from '@/routes'
 import models from '@/models'
 import {errorHandler, FileStreamAll, FileStreamOnlyError, limiter, StdOut} from '@/middlewares'
@@ -17,7 +17,7 @@ import {errorHandler, FileStreamAll, FileStreamOnlyError, limiter, StdOut} from 
 import '@/plugins/passport.plugin'
 import '@/plugins/aws.plugin'
 
-const { APP_PORT: port, APP_HOST: host, SESSION_KEY } = config
+const { port, host, allowedOrigin, sessionKey } = env
 
 class App {
   private app : express.Application;
@@ -31,11 +31,11 @@ class App {
     app.set('trust proxy', true) // 정확한 remote address 추적을 위함
     app.use(express.json())
     let corsOption = {
-      origin: config.ALLOWED_ORIGIN,
+      origin: allowedOrigin,
     }
     app.use(cors(corsOption))
     app.use(session({
-      secret: SESSION_KEY,
+      secret: sessionKey,
       resave: false,
       saveUninitialized: false
     }))
