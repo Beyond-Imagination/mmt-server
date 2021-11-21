@@ -29,6 +29,7 @@ export const env = {
   // AWS
   aws: {
     profile: getOsEnv('AWS_PROFILE'),
+    region: getOsEnv('AWS_REGION', 'ap-northeast-2'),
     s3BucketName: getOsEnv('AWS_S3_BUCKET_NAME'),
   },
 
