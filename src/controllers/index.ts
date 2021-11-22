@@ -1,5 +1,7 @@
-import TourController from "@/controllers/modules/tour";
+import StoryController from '@/controllers/modules/story'
+import TourController from '@/controllers/modules/tour'
 
 export {
-    TourController
+  StoryController,
+  TourController
 }
