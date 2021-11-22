@@ -1,7 +1,9 @@
-import StoryController from '@/controllers/modules/story'
-import TourController from '@/controllers/modules/tour'
+import StoryController from './modules/story'
+import TourController from './modules/tour'
+import UserController from './modules/user'
 
 export {
   StoryController,
-  TourController
+  TourController,
+  UserController
 }
