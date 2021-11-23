@@ -5,7 +5,8 @@ import cors from 'cors'
 
 import routes from '@/routes'
 import {env} from '@/env'
-import {errorHandler, FileStreamAll, FileStreamOnlyError, limiter, StdOut} from '@/middlewares'
+import {errorHandler} from '@/middlewares'
+import {limiter, morganLogger} from '@/libs'
 
 const {allowedOrigin, sessionKey} = env
 
@@ -30,9 +31,7 @@ export const expressLoader = (): express.Application => {
   app.use(passport.session())
 
   // Morgan
-  app.use(StdOut())
-  app.use(FileStreamAll())
-  app.use(FileStreamOnlyError())
+  app.use(morganLogger())
 
   // Express Rate Limit
   // apply to all requests
