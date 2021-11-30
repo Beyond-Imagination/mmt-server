@@ -143,7 +143,7 @@ export declare namespace Tour {
             }
         }
 
-        export namespace GetDetailInfo {
+        namespace GetDetailInfo {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -177,7 +177,7 @@ export declare namespace Tour {
             }
         }
 
-        export namespace GetDetailIntro {
+        namespace GetDetailIntro {
             interface Request {
                 numOfRows?: number; // 한 페이지 결과 수
                 pageNo?: number; // 페이지 번호
@@ -268,7 +268,7 @@ export declare namespace Tour {
             }
         }
 
-        export namespace GetLocationBasedList {
+        namespace GetLocationBasedList {
             interface Request {
                 numOfRows?: string; // 한 페이지 결과 수
                 pageNo?: string; // 현재 페이지 번호

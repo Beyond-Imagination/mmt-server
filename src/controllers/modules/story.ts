@@ -13,31 +13,14 @@ const index = async (req: Request, res: Response) => {
   const storyService = new StoryService(accessToken)
 
   // 사용자 확인
-  const {isStoryUser: isSU} = await storyService.isStoryUser()
-  if (!isSU) {
-    throw new NotStoryUserError()
-  }
+  await checkIfUserExist(storyService)
 
   // 동의 내역 확인하기
-  const scopes = ['story_publish']
-  const {scopes: consent} = await storyService.checkConsent(scopes)
-  const isStoryPublishAgreed = consent[0].agreed
+  await checkIfStoryPublishAgreed(storyService)
 
-  if (!(isStoryPublishAgreed)) {
-    throw new NotAgreeToWriteStoryError()
-  }
-
+  // 이미지 데이터 받아오기
   const { imageUrl } = body
-
-  const result = await axios
-    .get(imageUrl, {
-      responseType: 'arraybuffer'
-    })
-    .catch(e => {
-      throw new FailedToCallAPIError(e.message)
-    })
-  const Buffer = buffer.Buffer
-  const imageData = Buffer.from(result.data)
+  const imageData = await getImageData(imageUrl)
 
   // 이미지 업로드 하기
   const imageUrlList = await storyService.uploadImages(imageData)
@@ -50,4 +33,48 @@ const index = async (req: Request, res: Response) => {
 
 export default {
   index
+}
+
+/**
+ * 사용자가 카카오스토리 유저인지 확인합니다.
+ * @param storyService - StoryService 인스턴스
+ */
+async function checkIfUserExist(storyService: StoryService) {
+  const isStoryUser = await storyService.isStoryUser()
+  if (!isStoryUser) {
+    throw new NotStoryUserError()
+  }
+}
+
+/**
+ * 사용자가 카카오 스토리 포스팅 작성에 동의하였는지 확인합니다.
+ * @param storyService - StoryService 인스턴스
+ */
+async function checkIfStoryPublishAgreed(storyService: StoryService) {
+  const scopes = ['story_publish']
+  const {scopes: consent} = await storyService.checkConsent(scopes)
+  const isStoryPublishAgreed = consent[0].agreed
+
+  if (!(isStoryPublishAgreed)) {
+    throw new NotAgreeToWriteStoryError()
+  }
+}
+
+/**
+ * url을 통해 받아온 이미지 데이터를 binary 형태로 리턴해줍니다.
+ * @param imageUrl - 이미지 url
+ */
+async function getImageData(imageUrl: string) {
+  const result = await axios
+    .get(imageUrl, {
+      responseType: 'arraybuffer'
+    })
+    .catch(e => {
+      throw new FailedToCallAPIError(e.message)
+    })
+
+  const Buffer = buffer.Buffer
+  const imageData = Buffer.from(result.data)
+
+  return imageData
 }

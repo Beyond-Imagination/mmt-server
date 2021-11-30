@@ -14,7 +14,10 @@ const uploadImage = async (req, res) => {
     throw new Error('fail to upload image to s3')
   }
 
-  success(res, {'image': (req.file as Express.MulterS3.File).location})
+  const image = (req.file as Express.MulterS3.File).location
+  const result = {image}
+
+  success(res, result)
 }
 
 export default {

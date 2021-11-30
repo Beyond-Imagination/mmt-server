@@ -19,7 +19,7 @@ const tourService = new TourService()
  * @param req
  * @param res
  */
-const index = async (req: Request, res: Response) => {
+const getTourList = async (req: Request, res: Response) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     throw new ReqParamsNotMatchError(errors)
@@ -29,59 +29,47 @@ const index = async (req: Request, res: Response) => {
 
   let locationBasedList = await tourService.getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
   if(!query.contentTypeId) {
+    // 서비스 요구사항에 맞는  content type id들을 가진 items만 filtering
     locationBasedList.items.item = locationBasedList.items.item.filter(value => CONTENT_TYPE_ID_VALUES.includes(String(value.contenttypeid)))
     locationBasedList.numOfRows = locationBasedList.items.item.length
   }
-  
+
+  let items = []
+
+  // todo: @ts-ignore 처리되어 있는 타입 관련 이슈들 해결
+  // @ts-ignore
+  if (locationBasedList.items !== '') {
+    // @ts-ignore
+    if (!(locationBasedList.items.item.length)) {
+      // 모종의 이유로 배열이 아니라 오브젝트라면 배열로 바꿔줌
+      // @ts-ignore
+      locationBasedList.items.item = [locationBasedList.items.item]
+    }
+
+    const detailCommonList = await getDetailCommonList(query.overview, locationBasedList)
+
+    const mergedList = _.merge(locationBasedList.items, {item: detailCommonList})
+
+    items = mergedList.item.map(item => {
+      return {
+        contentId: item.contentid, // 콘텐츠ID
+        contentTypeId: item.contenttypeid, // 관광타입(관광지, 숙박 등) ID
+        imageUrl: item.firstimage2, // 썸네일 이미지 주소 (약 160\*100 size)
+        title: item.title, // 콘텐츠 제목
+        overview: item.overview, // 콘텐츠 개요
+        mapx: item.mapx,
+        mapy: item.mapy,
+      }
+    })
+  }
+
   const result: Tour.API.GetMany.Result = {
     numOfRows: locationBasedList.numOfRows,
     pageNo: locationBasedList.pageNo,
     totalCount: locationBasedList.totalCount,
     arrange: query.arrange as string,
-    items: []
+    items
   }
-
-  // todo: @ts-ignore 처리되어 있는 타입 관련 이슈들 해결
-  // @ts-ignore
-  if (locationBasedList.items === '') {
-    return success(res, result)
-  }
-
-  // @ts-ignore
-  if (!(locationBasedList.items.item.length)) {
-    // 모종의 이유로 배열이 아니라 오브젝트라면 배열로 바꿔줌
-    // @ts-ignore
-    locationBasedList.items.item = [locationBasedList.items.item]
-  }
-
-  let detailCommonList = []
-  if(query.overview==='true') {
-    detailCommonList = await Promise.all(
-      locationBasedList.items.item.map(async item =>
-        tourService.getDetailCommon({
-          contentId: item.contentid,
-          contentTypeId: item.contenttypeid,
-          overviewYN: 'Y'
-        })
-      )
-    )
-  }
-  
-  const mergedList = _.merge(locationBasedList.items, {item: detailCommonList})
-
-  const items = mergedList.item.map(item => {
-    return {
-      contentId: item.contentid, // 콘텐츠ID
-      contentTypeId: item.contenttypeid, // 관광타입(관광지, 숙박 등) ID
-      imageUrl: item.firstimage2, // 썸네일 이미지 주소 (약 160\*100 size)
-      title: item.title, // 콘텐츠 제목
-      overview: item.overview, // 콘텐츠 개요
-      mapx: item.mapx,
-      mapy: item.mapy,
-    }
-  })
-
-  result.items = items
 
   success(res, result)
 }
@@ -91,7 +79,7 @@ const index = async (req: Request, res: Response) => {
  * @param req
  * @param res
  */
-const show = async (req: Request, res: Response) => {
+const getTourDetail = async (req: Request, res: Response) => {
   const errors = validationResult(req)
   if (!errors.isEmpty()) {
     throw new ReqParamsNotMatchError(errors)
@@ -119,37 +107,13 @@ const show = async (req: Request, res: Response) => {
     throw new ContentNotFoundError()
   }
 
+  const images = getTourImages(detailImageList)
   const normalInfo = parseDetailCommon(detailCommon)
   const infoInfo = parseDetailIntro(detailIntro)
+  const detailInfo = (detailInfoList.totalCount !== 0) ? parseDetailInfo(detailInfoList.items.item) : []
 
-  let images
-  if (detailImageList.totalCount === 1) {
-    let item = detailImageList.items.item as Tour.Service.GetDetailImage.Image
-    images = [{
-      imgName: item.imgname, // 이미지명
-      originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
-      smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
-    }]
-  } else if (detailImageList.totalCount > 1) {
-    let item = detailImageList.items.item as Tour.Service.GetDetailImage.Image[]
-    images = item.map(item => {
-      return {
-        imgName: item.imgname, // 이미지명
-        originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
-        smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
-      }
-    })
-  } else {
-    images = []
-  }
-
-  let detailInfo = []
-  if (detailInfoList.totalCount !== 0) {
-    detailInfo = parseDetailInfo(detailInfoList.items.item)
-  }
-
-  let nftList = (req.user as IUser).nftList as Array<INft>
-  let nft = nftList.find(nft => nft.contentId === contentId)
+  const nftList = (req.user as IUser).nftList as Array<INft>
+  const nft = nftList.find(nft => nft.contentId === contentId)
 
   const result: Tour.API.GetOne.Result = {
     contentId, // 콘텐츠 ID
@@ -165,10 +129,8 @@ const show = async (req: Request, res: Response) => {
     detailInfo, // 상세 정보
     mapx: detailCommon.mapx,
     mapy: detailCommon.mapy,
-  }
 
-  if(nft) {
-    result.nft = {
+    nft: nft && {
       'contentId': nft.contentId,
       'image': nft.image,
       'title': nft.title,
@@ -184,8 +146,25 @@ const show = async (req: Request, res: Response) => {
 }
 
 export default {
-  index,
-  show
+  getTourList,
+  getTourDetail
+}
+
+async function getDetailCommonList(overview, locationBasedList) {
+  let detailCommonList = []
+  if(overview==='true') {
+    detailCommonList = await Promise.all(
+      locationBasedList.items.item.map(async item =>
+        tourService.getDetailCommon({
+          contentId: item.contentid,
+          contentTypeId: item.contenttypeid,
+          overviewYN: 'Y'
+        })
+      )
+    )
+  }
+
+  return detailCommonList
 }
 
 function parseDetailCommon(detailCommon) {
@@ -482,4 +461,22 @@ function parseDetailInfo(detailInfoList) {
 
     return obj
   })
+}
+
+function getTourImages(detailImageList) {
+  let items = detailImageList.items.item || []
+
+  if (detailImageList.totalCount == 1) {
+    items = [items]
+  }
+
+  const images = items.map(item => {
+    return {
+      imgName: item.imgname, // 이미지명
+      originImgUrl: item.originimgurl, // 원본 이미지 URL (약 500\*333 size)
+      smallImgUrl: item.smallimageurl // 썸네일 이미지 URL (약 160\*100 size)
+    }
+  })
+
+  return images
 }
