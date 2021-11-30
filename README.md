@@ -1,17 +1,25 @@
 
-# Express Template
+# mmt-server
 
-Express + Typescript 예시 프로젝트입니다.
+## Introduction
 
-## 사용법
+**Moment, 세상에 하나뿐인 나만의 특별한 여행 지도** 프로젝트의 백엔드 repository 입니다. 
 
-1. 필요한 module 설치
-    ```
-    yarn # or npm init (가능한 yarn 추천)
-    ```
+API 문서 관리는 Postman, issue/코드 관리는 Jetbrain Space를 사용합니다.
+
+## Project Stack
+
+* Amazon Lightsail
+* Amazon S3
+* Express
+* Typescript
+* Mongoose
+
+## Usage
+
 1. 환경변수 파일 설정
-   1. 루트 디렉토리 내 **.env** 파일을 생성
-   1. **.env.sample** 파일 내용을 .env에 붙여넣고 값을 채웁니다.
+   1. 루트 디렉토리 내 **env/.env** 파일을 생성
+   1. **env/.env.sample** 파일 내용을 **env/.env**에 붙여넣고 값을 채웁니다.
    
 1. 실행
     ```
