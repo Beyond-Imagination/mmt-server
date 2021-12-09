@@ -306,7 +306,7 @@ export declare namespace Tour {
                         tel?: string // 전화번호
                         title: string // 제목
                     }[]
-                }
+                } | ''
             }
         }
     }

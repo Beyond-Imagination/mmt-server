@@ -28,22 +28,20 @@ const getTourList = async (req: Request, res: Response) => {
   const { query } = req
 
   let locationBasedList = await tourService.getLocationBasedList(query as unknown as Tour.Service.GetLocationBasedList.Request)
-  if(!query.contentTypeId) {
-    // 서비스 요구사항에 맞는  content type id들을 가진 items만 filtering
-    locationBasedList.items.item = locationBasedList.items.item.filter(value => CONTENT_TYPE_ID_VALUES.includes(String(value.contenttypeid)))
-    locationBasedList.numOfRows = locationBasedList.items.item.length
-  }
 
   let items = []
 
-  // todo: @ts-ignore 처리되어 있는 타입 관련 이슈들 해결
-  // @ts-ignore
   if (locationBasedList.items !== '') {
-    // @ts-ignore
-    if (!(locationBasedList.items.item.length)) {
-      // 모종의 이유로 배열이 아니라 오브젝트라면 배열로 바꿔줌
-      // @ts-ignore
+    // 데이터가 없으면 값이 ''로 들어옴
+
+    if (!Array.isArray(locationBasedList.items.item)) {
       locationBasedList.items.item = [locationBasedList.items.item]
+    }
+
+    if(!query.contentTypeId) {
+      // 서비스 요구사항에 맞는  content type id들을 가진 items만 filtering
+      locationBasedList.items.item = locationBasedList.items.item.filter(value => CONTENT_TYPE_ID_VALUES.includes(String(value.contenttypeid)))
+      locationBasedList.numOfRows = locationBasedList.items.item.length
     }
 
     const detailCommonList = await getDetailCommonList(query.overview, locationBasedList)
@@ -152,7 +150,8 @@ export default {
 
 async function getDetailCommonList(overview, locationBasedList) {
   let detailCommonList = []
-  if(overview==='true') {
+
+  if (overview === 'true') {
     detailCommonList = await Promise.all(
       locationBasedList.items.item.map(async item =>
         tourService.getDetailCommon({
@@ -418,7 +417,7 @@ function parseDetailIntro(detailIntro) {
 }
 
 function parseDetailInfo(detailInfoList) {
-  if (!(detailInfoList.length)) {
+  if (!Array.isArray(detailInfoList)) {
     // array가 아닌 object가 들어올 수도 있음
     detailInfoList = [detailInfoList]
   }
